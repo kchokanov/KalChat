@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "747949965422",
+    "firebase_url": "https://kalchat-77b1a.firebaseio.com",
+    "project_id": "kalchat-77b1a",
+    "storage_bucket": "kalchat-77b1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747949965422:android:69afaa99b7e88dd6",
+        "android_client_info": {
+          "package_name": "xyz.chokanov.kalchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "747949965422-ejvnqlf7pg5ujg80ua7msplpac304n43.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyz.chokanov.kalchat",
+            "certificate_hash": "dbbbf8f7b7e1884e9128ce12472d9c8c7102c79a"
+          }
+        },
+        {
+          "client_id": "747949965422-pmm4ml9shnt7pblkmajgq518h8pnvvg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK-4fgqsBMS_bF0rYF-5kScSTn1aOX7A0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747949965422-pmm4ml9shnt7pblkmajgq518h8pnvvg7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
