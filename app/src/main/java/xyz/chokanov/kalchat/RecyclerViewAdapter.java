@@ -22,11 +22,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<String> mMessages = new ArrayList<>();
     private ArrayList<String> mUserNames = new ArrayList<>();
+    private ArrayList<String> mTimeStamps= new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> messages, ArrayList<String> userNames ) {
+    public RecyclerViewAdapter(Context context, ArrayList<String> messages, ArrayList<String> userNames, ArrayList<String> timeStamps ) {
         mMessages = messages;
         mUserNames = userNames;
+        mTimeStamps = timeStamps;
         mContext = context;
     }
 
@@ -43,6 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.mMessage.setText(mMessages.get(position));
         holder.mUserName.setText(mUserNames.get(position));
+        holder.mTimeStamp.setText(mTimeStamps.get(position));
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,12 +64,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView mUserName;
         TextView mMessage;
+        TextView mTimeStamp;
         RelativeLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mUserName = itemView.findViewById(R.id.txtUser);
             mMessage = itemView.findViewById(R.id.txtMsg);
+            mTimeStamp = itemView.findViewById(R.id.txtTime);
             parentLayout = itemView.findViewById(R.id.layoutItem);
         }
     }

@@ -16,7 +16,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private String messageIdKey;
     private ArrayList<String> mChatMessages = new ArrayList<>();
     private ArrayList<String> mChatNames = new ArrayList<>();
+    private ArrayList<String> mChatTimeStamp = new ArrayList<>();
     private static final String TAG = "MainActivity";
 
 
@@ -50,12 +53,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Map<String,Object> map = new HashMap<String, Object>();
                 messageIdKey = root.push().getKey();
+                Calendar timeStamp = Calendar.getInstance();
                 root.updateChildren(map);
 
                 DatabaseReference msgRoot = root.child(messageIdKey);
                 Map<String, Object> childMap = new HashMap<String, Object>();
                 childMap.put("User", session.getUsername());
                 childMap.put("Message", mTextInput.getText().toString());
+                childMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(timeStamp.getTime()));
                 msgRoot.updateChildren(childMap);
                 mTextInput.setText("");
             }
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         Iterator iterator = dataSnapshot.getChildren().iterator();
         while(iterator.hasNext()){
             mChatMessages.add(((DataSnapshot)iterator.next()).getValue().toString());
+            mChatTimeStamp.add(((DataSnapshot)iterator.next()).getValue().toString());
             mChatNames.add(((DataSnapshot)iterator.next()).getValue().toString());
         }
     }
@@ -123,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: started.");
         RecyclerView recyclerView = findViewById(R.id.recviewTest);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages, mChatNames);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages, mChatNames, mChatTimeStamp);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
