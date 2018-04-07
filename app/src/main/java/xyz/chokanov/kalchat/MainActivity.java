@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class MainActivity extends AppCompatActivity {
     private TextView mTextId;
     private EditText mTextInput;
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started.");
-        final Session session = new Session();
 
+        final Session session = new Session();
         mTextId = findViewById(R.id.txtId);
         mTextInput = findViewById(R.id.txtInput);
         mButtonSend = findViewById(R.id.btnSend);
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Map<String,Object> map = new HashMap<String, Object>();
                 messageIdKey = root.push().getKey();
-                Calendar timeStamp = Calendar.getInstance();
                 root.updateChildren(map);
 
                 DatabaseReference msgRoot = root.child(messageIdKey);
                 Map<String, Object> childMap = new HashMap<String, Object>();
                 childMap.put("User", session.getUsername());
                 childMap.put("Message", mTextInput.getText().toString());
-                childMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(timeStamp.getTime()));
+                childMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
+                        Calendar.getInstance().getTime()));
                 msgRoot.updateChildren(childMap);
                 mTextInput.setText("");
             }
@@ -106,24 +107,44 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "initFillerChat: started.");
         mChatMessages.add("hey bro");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("Hows life");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("mines good");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("yo man");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("talk to me");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("im lonely");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("and cold");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("so cold");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("i just need someone");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
         mChatMessages.add("why was i born a kal...");
         mChatNames.add("test Kal");
+        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
     }
 
     private void initRecyclerView(){
@@ -133,4 +154,5 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
 }
