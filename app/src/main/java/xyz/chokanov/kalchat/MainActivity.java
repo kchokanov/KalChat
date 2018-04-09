@@ -15,12 +15,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextId;
     private EditText mTextInput;
     private Button mButtonSend;
-    private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot().child("General");
+    private DatabaseReference chatDBRef = FirebaseDatabase.getInstance().getReference().getRoot()
+            .child("General");
     private String messageIdKey;
     private ArrayList<String> mChatMessages = new ArrayList<>();
     private ArrayList<String> mChatNames = new ArrayList<>();
@@ -41,41 +42,60 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started.");
-
         final Session session = new Session();
+        DatabaseReference userBDRef = FirebaseDatabase.getInstance().getReference().getRoot()
+                .child("UserList").child(Session.getId());
         mTextId = findViewById(R.id.txtId);
         mTextInput = findViewById(R.id.txtInput);
         mButtonSend = findViewById(R.id.btnSend);
 
         initRecyclerView();
-        mTextId.setText("Welcome " + session.getUsername());
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Map<String,Object> map = new HashMap<String, Object>();
-                messageIdKey = root.push().getKey();
-                root.updateChildren(map);
+                messageIdKey = chatDBRef.push().getKey();
+                chatDBRef.updateChildren(map);
 
-                DatabaseReference msgRoot = root.child(messageIdKey);
+                DatabaseReference msgDBRef = chatDBRef.child(messageIdKey);
                 Map<String, Object> childMap = new HashMap<String, Object>();
                 childMap.put("User", session.getUsername());
                 childMap.put("Message", mTextInput.getText().toString());
                 childMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
                         Calendar.getInstance().getTime()));
-                msgRoot.updateChildren(childMap);
+                msgDBRef.updateChildren(childMap);
                 mTextInput.setText("");
             }
 
         });
-        root.addChildEventListener(new ChildEventListener() {
+        userBDRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    session.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
+                    session.setUsername(dataSnapshot.child("UserName").getValue().toString());
+                    mTextId.setText("Welcome " + session.getUsername());
+                }catch (NullPointerException e){
+                    session.createNewUser();
+                    mTextId.setText("Welcome " + session.getUsername());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        chatDBRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                appendData(dataSnapshot);
+                appendChatData(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                appendData(dataSnapshot);
+                appendChatData(dataSnapshot);
             }
 
             @Override
@@ -94,12 +114,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void appendData(DataSnapshot dataSnapshot) {
-        Iterator iterator = dataSnapshot.getChildren().iterator();
-        while(iterator.hasNext()){
-            mChatMessages.add(((DataSnapshot)iterator.next()).getValue().toString());
-            mChatTimeStamp.add(((DataSnapshot)iterator.next()).getValue().toString());
-            mChatNames.add(((DataSnapshot)iterator.next()).getValue().toString());
+    public void appendChatData(DataSnapshot dataSnapshot) {
+        try {
+            mChatMessages.add(dataSnapshot.child("Message").getValue().toString());
+            mChatTimeStamp.add(dataSnapshot.child("TimeSent").getValue().toString());
+            mChatNames.add(dataSnapshot.child("User").getValue().toString());
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
         }
     }
 
