@@ -1,11 +1,15 @@
 package xyz.chokanov.kalchat;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.List;
@@ -21,7 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     /**
      * Default constructor
      * @param context Activity using the recycle view
-     * @param messages list of an array of strings [Message, UserName, TimeStamp]
+     * @param messages list of an array of strings [Message, UserName, TimeStamp, Avatar]
      */
     public RecyclerViewAdapter(Context context, List<String[]> messages) {
         mMessages = messages;
@@ -42,6 +46,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.mMessage.setText(mMessages.get(position)[0]);
         holder.mTimeStamp.setText(mMessages.get(position)[1]);
         holder.mUserName.setText(mMessages.get(position)[2]);
+        byte [] encodeByte= Base64.decode(mMessages.get(position)[3], Base64.DEFAULT);
+        Bitmap avatar= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        holder.mImageAvatar.setImageBitmap(avatar);
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView mUserName;
         TextView mMessage;
         TextView mTimeStamp;
+        ImageView mImageAvatar;
         RelativeLayout parentLayout;
 
         public ViewHolder(View itemView) {
@@ -71,6 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mUserName = itemView.findViewById(R.id.txtUser);
             mMessage = itemView.findViewById(R.id.txtMsg);
             mTimeStamp = itemView.findViewById(R.id.txtTime);
+            mImageAvatar = itemView.findViewById(R.id.imgAvatarList);
             parentLayout = itemView.findViewById(R.id.layoutItem);
         }
     }

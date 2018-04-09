@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage(chatDBRef, user.getUsername(), mTextInput.getText().toString());
+                sendMessage(chatDBRef, user.getUsername(),user.getAvatarAsString(), mTextInput.getText().toString());
                 mTextInput.setText("");
             }
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Attempt to get user data. if none exists a new user will be made
                 try {
-                    user.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
+                    user.setAvatarImage(dataSnapshot.child("Image").getValue().toString());
                     user.setUsername(dataSnapshot.child("UserName").getValue().toString());
                     mTextShowUser.setText("User: " + user.getUsername());
                 }catch (NullPointerException e){
@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             mChatMessages.add(new String [] {dataSnapshot.child("Message").getValue().toString(),
                     dataSnapshot.child("TimeSent").getValue().toString(),
-                    dataSnapshot.child("User").getValue().toString()});
+                    dataSnapshot.child("User").getValue().toString(),
+                    dataSnapshot.child("Image").getValue().toString()});
                     mChatRecView.scrollToPosition(mChatMessages.size()-1);
         } catch (NullPointerException ex) {
             ex.printStackTrace();
@@ -144,17 +145,18 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Adds message to database
      * @param root Database reference for the chat room
-     * @param username Username of sender
+     * @param name id of sender
      * @param message Message to be sent... duh
      */
-    private void sendMessage(DatabaseReference root, String username, String message){
+    private void sendMessage(DatabaseReference root, String name, String avatar, String message){
         Map<String,Object> chatMap = new HashMap<String, Object>();
         String messageIdKey = root.push().getKey();
         root.updateChildren(chatMap);
 
         DatabaseReference msgDBRef = root.child(messageIdKey);
         Map<String, Object> msgMap = new HashMap<String, Object>();
-        msgMap.put("User", username);
+        msgMap.put("User", name);
+        msgMap.put("Image", avatar); //TODO - JESUS CHRIST FIX THIS LATER PLEASE
         msgMap.put("Message", message);
         msgMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
                 Calendar.getInstance().getTime()));

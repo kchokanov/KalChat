@@ -1,5 +1,7 @@
 package xyz.chokanov.kalchat;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,21 +10,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.mukesh.image_processing.ImageProcessor;
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText mTextUserName;
     private Button mButtonChangeAvatar, mButtonSetUserName;
-    private ImageView ImageAvatar;
+    private ImageView mImageAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         mTextUserName = findViewById(R.id.txtName);
+        mImageAvatar = findViewById(R.id.imgAvatarList);
         mButtonSetUserName = findViewById(R.id.btnSetName);
         mButtonChangeAvatar = findViewById(R.id.btnRandAvatar);
         final User user = new User();
@@ -31,8 +31,6 @@ public class SettingsActivity extends AppCompatActivity {
         mButtonChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "TODO",
-                        Toast.LENGTH_SHORT).show();
             }
         });
 
