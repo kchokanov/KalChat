@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextShowUser;
     private EditText mTextInput;
     private Button mButtonSend;
+    private RecyclerView mChatRecView;
     private List<String[]> mChatMessages = new ArrayList<>(); //TODO - not have an array list with every message ever in the room
     private String roomName = "General";
 
@@ -51,8 +52,12 @@ public class MainActivity extends AppCompatActivity {
         mTextShowUser = findViewById(R.id.txtId);
         mTextInput = findViewById(R.id.txtInput);
         mButtonSend = findViewById(R.id.btnSend);
+        mChatRecView = findViewById(R.id.recviewChat);
 
-        initRecyclerView();
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages);
+        mChatRecView.setAdapter(recyclerViewAdapter);
+        mChatRecView.setLayoutManager(new LinearLayoutManager(this));
+
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,17 +115,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Creates and binds the chat recyclerview to the UI and to the chat array list
-     */
-    private void initRecyclerView(){
-        Log.d(TAG, "initRecyclerView: started.");
-        RecyclerView recyclerView = findViewById(R.id.recviewTest);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    /**
      * Appends message to chat array list.
      * @param dataSnapshot Database snapshot containing message inforamtion
      */
@@ -129,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             mChatMessages.add(new String [] {dataSnapshot.child("Message").getValue().toString(),
                     dataSnapshot.child("TimeSent").getValue().toString(),
                     dataSnapshot.child("User").getValue().toString()});
+                    mChatRecView.scrollToPosition(mChatMessages.size()-1);
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
@@ -152,5 +147,6 @@ public class MainActivity extends AppCompatActivity {
         msgMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
                 Calendar.getInstance().getTime()));
         msgDBRef.updateChildren(msgMap);
+        mChatRecView.scrollToPosition(mChatMessages.size()-1);
     }
 }

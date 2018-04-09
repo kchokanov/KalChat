@@ -5,7 +5,7 @@
     android:id="@+id/layoutItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/imgAvatar"
@@ -27,11 +27,12 @@
 
     <TextView
         android:id="@+id/txtMsg"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imgAvatar"
         android:layout_marginStart="64dp"
         android:layout_marginTop="32dp"
+        android:paddingRight="16dp"
         android:text="TextView" />
 
     <TextView
