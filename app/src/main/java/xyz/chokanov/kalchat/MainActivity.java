@@ -25,16 +25,14 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    private TextView mTextId;
+    private static final String TAG = "MainActivity";
+    private TextView mTextShowUser;
     private EditText mTextInput;
     private Button mButtonSend;
-    private DatabaseReference chatDBRef = FirebaseDatabase.getInstance().getReference().getRoot()
-            .child("General");
-    private String messageIdKey;
     private ArrayList<String> mChatMessages = new ArrayList<>();
     private ArrayList<String> mChatNames = new ArrayList<>();
     private ArrayList<String> mChatTimeStamp = new ArrayList<>();
-    private static final String TAG = "MainActivity";
+    private String roomName = "General";
 
 
     @Override
@@ -42,10 +40,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started.");
-        final Session session = new Session();
+        final User user = new User();
         DatabaseReference userBDRef = FirebaseDatabase.getInstance().getReference().getRoot()
-                .child("UserList").child(Session.getId());
-        mTextId = findViewById(R.id.txtId);
+                .child("UserList").child(User.getId());
+        final DatabaseReference chatDBRef = FirebaseDatabase.getInstance().getReference().getRoot()
+                .child(roomName);
+        mTextShowUser = findViewById(R.id.txtId);
         mTextInput = findViewById(R.id.txtInput);
         mButtonSend = findViewById(R.id.btnSend);
 
@@ -53,17 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String,Object> map = new HashMap<String, Object>();
-                messageIdKey = chatDBRef.push().getKey();
-                chatDBRef.updateChildren(map);
-
-                DatabaseReference msgDBRef = chatDBRef.child(messageIdKey);
-                Map<String, Object> childMap = new HashMap<String, Object>();
-                childMap.put("User", session.getUsername());
-                childMap.put("Message", mTextInput.getText().toString());
-                childMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
-                        Calendar.getInstance().getTime()));
-                msgDBRef.updateChildren(childMap);
+                sendMessage(chatDBRef, user.getUsername(), mTextInput.getText().toString());
                 mTextInput.setText("");
             }
 
@@ -72,12 +62,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    session.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
-                    session.setUsername(dataSnapshot.child("UserName").getValue().toString());
-                    mTextId.setText("Welcome " + session.getUsername());
+                    user.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
+                    user.setUsername(dataSnapshot.child("UserName").getValue().toString());
+                    mTextShowUser.setText("Welcome " + user.getUsername());
                 }catch (NullPointerException e){
-                    session.createNewUser();
-                    mTextId.setText("Welcome " + session.getUsername());
+                    user.createNewUser();
+                    mTextShowUser.setText("Welcome " + user.getUsername());
                 }
             }
 
@@ -114,7 +104,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void appendChatData(DataSnapshot dataSnapshot) {
+
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: started.");
+        RecyclerView recyclerView = findViewById(R.id.recviewTest);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages, mChatNames, mChatTimeStamp);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void appendChatData(DataSnapshot dataSnapshot) {
         try {
             mChatMessages.add(dataSnapshot.child("Message").getValue().toString());
             mChatTimeStamp.add(dataSnapshot.child("TimeSent").getValue().toString());
@@ -124,8 +123,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void sendMessage(DatabaseReference root, String username, String message){
+        Map<String,Object> chatMap = new HashMap<String, Object>();
+        String messageIdKey = root.push().getKey();
+        root.updateChildren(chatMap);
+
+        DatabaseReference msgDBRef = root.child(messageIdKey);
+        Map<String, Object> msgMap = new HashMap<String, Object>();
+        msgMap.put("User", username);
+        msgMap.put("Message", message);
+        msgMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
+                Calendar.getInstance().getTime()));
+        msgDBRef.updateChildren(msgMap);
+    }
+
     private void initFillerChat(){
-        Log.d(TAG, "initFillerChat: started.");
         mChatMessages.add("hey bro");
         mChatNames.add("test Kal");
         mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
@@ -167,13 +179,4 @@ public class MainActivity extends AppCompatActivity {
         mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
                 Calendar.getInstance().getTime()));
     }
-
-    private void initRecyclerView(){
-        Log.d(TAG, "initRecyclerView: started.");
-        RecyclerView recyclerView = findViewById(R.id.recviewTest);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages, mChatNames, mChatTimeStamp);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
 }

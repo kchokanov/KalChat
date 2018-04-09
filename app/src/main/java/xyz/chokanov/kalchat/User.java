@@ -16,24 +16,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Session {
-    private final String TAG = "Session";
-    private static String username;
+public class User {
+    private final String TAG = "User";
+    private static String userName;
     private static String avatarParam;
     private static String id = generateId();
     private DatabaseReference userListDBRef = FirebaseDatabase.getInstance().getReference()
             .getRoot().child("UserList");
 
     public void setUsername(String username) {
-        Session.username = username;
+        User.userName = username;
     }
 
     public void setAvatarParam(String avatarParam) {
-        Session.avatarParam = avatarParam;
+        User.avatarParam = avatarParam;
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
     public String getAvatarParam() {
         return avatarParam;
@@ -44,11 +44,11 @@ public class Session {
 
     public void createNewUser(){
         Log.d(TAG, "createNewUser: called.");
-        username = "Kal#" + new Random().nextInt(1337);
+        userName = "Kal#" + new Random().nextInt(1337);
         avatarParam = "TODO";
         DatabaseReference userDBRef = userListDBRef.child(id);
         Map<String, Object> childMap = new HashMap<String, Object>();
-        childMap.put("UserName", username);
+        childMap.put("UserName", userName);
         childMap.put("Image", avatarParam);
         userDBRef.updateChildren(childMap);
     }
