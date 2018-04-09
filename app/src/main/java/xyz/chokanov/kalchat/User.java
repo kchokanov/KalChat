@@ -43,7 +43,6 @@ public class User {
     public void setAvatarImage(Bitmap avatar) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         avatar.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        avatar.recycle();
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String avatarString = Base64.encodeToString(byteArray, Base64.DEFAULT);
         DatabaseReference userDBRef = userListDBRef.child(id);

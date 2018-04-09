@@ -29,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
         mButtonChangeAvatar = findViewById(R.id.btnRandAvatar);
         final User user = new User();
         mTextUserName.setText(user.getUsername());
+        mImageAvatar.setImageBitmap(user.getAvatarImage());
 
         mButtonChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
                 ImageProcessor imageProcessor = new ImageProcessor();
                 avatar = imageProcessor.doColorFilter(avatar, new Random().nextInt(256),
                         new Random().nextInt(256),new Random().nextInt(256));
+                user.setAvatarImage(avatar);
                 mImageAvatar.setImageBitmap(avatar);
             }
         });
