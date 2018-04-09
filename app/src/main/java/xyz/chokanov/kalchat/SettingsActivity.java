@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.mukesh.image_processing.ImageProcessor;
 
+import java.util.Random;
+
 public class SettingsActivity extends AppCompatActivity {
     private EditText mTextUserName;
     private Button mButtonChangeAvatar, mButtonSetUserName;
@@ -31,6 +33,11 @@ public class SettingsActivity extends AppCompatActivity {
         mButtonChangeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bitmap avatar = user.getAvatarImage();
+                ImageProcessor imageProcessor = new ImageProcessor();
+                avatar = imageProcessor.doColorFilter(avatar, new Random().nextInt(256),
+                        new Random().nextInt(256),new Random().nextInt(256));
+                mImageAvatar.setImageBitmap(avatar);
             }
         });
 
