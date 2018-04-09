@@ -27,8 +27,12 @@ public class User {
     private DatabaseReference userListDBRef = FirebaseDatabase.getInstance().getReference()
             .getRoot().child("UserList");
 
-    public void setUsername(String username) {
-        User.userName = username;
+    public void setUsername(String name) {
+        DatabaseReference userDBRef = userListDBRef.child(id);
+        Map<String, Object> childMap = new HashMap<String, Object>();
+        childMap.put("UserName", name);
+        userDBRef.updateChildren(childMap);
+        userName = name;
     }
 
     public void setAvatarParam(String avatarParam) {

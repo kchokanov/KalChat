@@ -1,11 +1,13 @@
 package xyz.chokanov.kalchat;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private TextView mTextShowUser;
     private EditText mTextInput;
-    private Button mButtonSend;
+    private Button mButtonSend, mButtonSettings;
     private RecyclerView mChatRecView;
     private List<String[]> mChatMessages = new ArrayList<>(); //TODO - not have an array list with every message ever in the room
     private String roomName = "General";
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started.");
         final User user = new User();
@@ -52,11 +55,20 @@ public class MainActivity extends AppCompatActivity {
         mTextShowUser = findViewById(R.id.txtId);
         mTextInput = findViewById(R.id.txtInput);
         mButtonSend = findViewById(R.id.btnSend);
+        mButtonSettings = findViewById(R.id.btnSettings);
         mChatRecView = findViewById(R.id.recviewChat);
 
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages);
         mChatRecView.setAdapter(recyclerViewAdapter);
         mChatRecView.setLayoutManager(new LinearLayoutManager(this));
+
+        mButtonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
 
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     user.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
                     user.setUsername(dataSnapshot.child("UserName").getValue().toString());
-                    mTextShowUser.setText("Welcome " + user.getUsername());
+                    mTextShowUser.setText("User: " + user.getUsername());
                 }catch (NullPointerException e){
                     user.createNewUser();
-                    mTextShowUser.setText("Welcome " + user.getUsername());
+                    mTextShowUser.setText("User: " + user.getUsername());
                 }
             }
 
