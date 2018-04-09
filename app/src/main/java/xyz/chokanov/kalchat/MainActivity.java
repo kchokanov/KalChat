@@ -24,12 +24,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Starting activity for the application. Creates chat and populates chat screen.
+ * If the user is registered their data is pulled from the DB, otherwise a new user is registered
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private TextView mTextShowUser;
     private EditText mTextInput;
     private Button mButtonSend;
-    private ArrayList<String> mChatMessages = new ArrayList<>();
+    private ArrayList<String> mChatMessages = new ArrayList<>(); //TODO - not have an array list with every message ever in the room
     private ArrayList<String> mChatNames = new ArrayList<>();
     private ArrayList<String> mChatTimeStamp = new ArrayList<>();
     private String roomName = "General";
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         userBDRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Attempt to get user data. if none exists a new user will be made
                 try {
                     user.setAvatarParam(dataSnapshot.child("Image").getValue().toString());
                     user.setUsername(dataSnapshot.child("UserName").getValue().toString());
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                //TODO
             }
         });
 
@@ -90,21 +95,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                //TODO
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                //TODO
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                //TODO
             }
         });
     }
 
+    /**
+     * Creates and binds the chat recyclerview to the UI and to the chat array list
+     */
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: started.");
         RecyclerView recyclerView = findViewById(R.id.recviewTest);
@@ -113,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /**
+     * Appends message to chat array list.
+     * @param dataSnapshot Database snapshot containing message inforamtion
+     */
     private void appendChatData(DataSnapshot dataSnapshot) {
         try {
             mChatMessages.add(dataSnapshot.child("Message").getValue().toString());
@@ -123,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adds message to database
+     * @param root Database reference for the chat room
+     * @param username Username of sender
+     * @param message Message to be sent... duh
+     */
     private void sendMessage(DatabaseReference root, String username, String message){
         Map<String,Object> chatMap = new HashMap<String, Object>();
         String messageIdKey = root.push().getKey();
@@ -137,6 +155,10 @@ public class MainActivity extends AppCompatActivity {
         msgDBRef.updateChildren(msgMap);
     }
 
+    /**
+     * Creates filler chat for testing the UI.
+     * @deprecated Hopefully
+     */
     private void initFillerChat(){
         mChatMessages.add("hey bro");
         mChatNames.add("test Kal");

@@ -11,20 +11,23 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
 /**
- * Created by User on 1/1/2018.
+ * Custom recycle view adapter for storing chat messages to be displayed on screen
  */
-
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-
     private static final String TAG = "RecyclerViewAdapter";
-
     private ArrayList<String> mMessages = new ArrayList<>();
     private ArrayList<String> mUserNames = new ArrayList<>();
-    private ArrayList<String> mTimeStamps= new ArrayList<>();
+    private ArrayList<String> mTimeStamps = new ArrayList<>();
     private Context mContext;
 
+    /**
+     * Default constructor
+     * @param context Activity using the recycle view
+     * @param messages list of messages to be used
+     * @param userNames list of usernames to be used
+     * @param timeStamps list of timestamps to be used
+     */
     public RecyclerViewAdapter(Context context, ArrayList<String> messages, ArrayList<String> userNames, ArrayList<String> timeStamps ) {
         mMessages = messages;
         mUserNames = userNames;
@@ -49,7 +52,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                //TODO - add a profile view maybe?
             }
         });
     }
@@ -60,6 +63,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
+    /**
+     * Custom viewholder for binding individual chat list items
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView mUserName;

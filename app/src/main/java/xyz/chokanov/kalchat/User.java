@@ -16,8 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Class for storing User info.
+ */
 public class User {
-    private final String TAG = "User";
+    private static final String TAG = "User";
     private static String userName;
     private static String avatarParam;
     private static String id = generateId();
@@ -42,6 +45,9 @@ public class User {
         return id;
     }
 
+    /**
+     * Creates new user with a random username and avatar parameters.
+     */
     public void createNewUser(){
         Log.d(TAG, "createNewUser: called.");
         userName = "Kal#" + new Random().nextInt(1337);
@@ -53,14 +59,19 @@ public class User {
         userDBRef.updateChildren(childMap);
     }
 
+    /**
+     * Creates unique user ID by hashing the devices MAC address.
+     * @return user ID as string
+     */
     private static String generateId(){
+        Log.d(TAG, "generateId: called");
         String id = "";
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {
                 if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
 
-                byte[] macBytes = nif.getHardwareAddress();
+                byte[] macBytes = nif.getHardwareAddress(); //TODO - Find out how this actually gets the MAC
                 if (macBytes == null) {
                     return "";
                 }
