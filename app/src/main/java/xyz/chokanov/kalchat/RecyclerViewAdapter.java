@@ -8,30 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Custom recycle view adapter for storing chat messages to be displayed on screen
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<String> mMessages = new ArrayList<>();
-    private ArrayList<String> mUserNames = new ArrayList<>();
-    private ArrayList<String> mTimeStamps = new ArrayList<>();
+    private List<String[]> mMessages;
     private Context mContext;
 
     /**
      * Default constructor
      * @param context Activity using the recycle view
-     * @param messages list of messages to be used
-     * @param userNames list of usernames to be used
-     * @param timeStamps list of timestamps to be used
+     * @param messages list of an array of strings [Message, UserName, TimeStamp]
      */
-    public RecyclerViewAdapter(Context context, ArrayList<String> messages, ArrayList<String> userNames, ArrayList<String> timeStamps ) {
+    public RecyclerViewAdapter(Context context, List<String[]> messages) {
         mMessages = messages;
-        mUserNames = userNames;
-        mTimeStamps = timeStamps;
         mContext = context;
     }
 
@@ -46,9 +39,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        holder.mMessage.setText(mMessages.get(position));
-        holder.mUserName.setText(mUserNames.get(position));
-        holder.mTimeStamp.setText(mTimeStamps.get(position));
+        holder.mMessage.setText(mMessages.get(position)[0]);
+        holder.mTimeStamp.setText(mMessages.get(position)[1]);
+        holder.mUserName.setText(mMessages.get(position)[2]);
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

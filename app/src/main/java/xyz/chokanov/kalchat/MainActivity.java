@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,9 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextShowUser;
     private EditText mTextInput;
     private Button mButtonSend;
-    private ArrayList<String> mChatMessages = new ArrayList<>(); //TODO - not have an array list with every message ever in the room
-    private ArrayList<String> mChatNames = new ArrayList<>();
-    private ArrayList<String> mChatTimeStamp = new ArrayList<>();
+    private List<String[]> mChatMessages = new ArrayList<>(); //TODO - not have an array list with every message ever in the room
     private String roomName = "General";
 
 
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: started.");
         RecyclerView recyclerView = findViewById(R.id.recviewTest);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages, mChatNames, mChatTimeStamp);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this, mChatMessages);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -127,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void appendChatData(DataSnapshot dataSnapshot) {
         try {
-            mChatMessages.add(dataSnapshot.child("Message").getValue().toString());
-            mChatTimeStamp.add(dataSnapshot.child("TimeSent").getValue().toString());
-            mChatNames.add(dataSnapshot.child("User").getValue().toString());
+            mChatMessages.add(new String [] {dataSnapshot.child("Message").getValue().toString(),
+                    dataSnapshot.child("TimeSent").getValue().toString(),
+                    dataSnapshot.child("User").getValue().toString()});
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
@@ -153,52 +152,5 @@ public class MainActivity extends AppCompatActivity {
         msgMap.put("TimeSent", new SimpleDateFormat("HH:mm").format(
                 Calendar.getInstance().getTime()));
         msgDBRef.updateChildren(msgMap);
-    }
-
-    /**
-     * Creates filler chat for testing the UI.
-     * @deprecated Hopefully
-     */
-    private void initFillerChat(){
-        mChatMessages.add("hey bro");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("Hows life");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("mines good");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("yo man");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("talk to me");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("im lonely");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("and cold");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("so cold");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("i just need someone");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
-        mChatMessages.add("why was i born a kal...");
-        mChatNames.add("test Kal");
-        mChatTimeStamp.add(new SimpleDateFormat("HH:mm").format(
-                Calendar.getInstance().getTime()));
     }
 }
